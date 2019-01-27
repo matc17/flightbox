@@ -17,10 +17,12 @@ import time
 from data_hub.data_hub_worker import DataHubWorker
 from input.test_data_generator import TestDataGenerator
 from input.input_network_sbs1 import InputNetworkSbs1
+from input.input_network_softrf import InputNetworksoftrf
 from input.input_network_ogn_server import InputNetworkOgnServer
 from input.input_serial_gnss import InputSerialGnss
 from output.output_network_airconnect import OutputNetworkAirConnect
 from transformation.transformation_sbs1ognnmea_flarm import Sbs1OgnNmeaToFlarmTransformation
+
 
 __author__ = "Thorsten Biermann"
 __copyright__ = "Copyright 2015, Thorsten Biermann"
@@ -131,20 +133,24 @@ def flightbox_main():
 
         # instantiate test data (input) module
         # test_data_generator = TestDataGenerator(data_hub)
-        # processes.append(test_data_generator)
+        # processes.append(test_data_generator) 
 
         # instantiate SBS1 (input) module
         input_network_sbs1 = InputNetworkSbs1(data_hub, '127.0.0.1', 30003, message_types=['1', '2', '3', '4'])
         processes.append(input_network_sbs1)
 
+        # instantiate SoftRF (input) module
+        input_network_softrf = InputNetworksoftrf(data_hub, 10110 , message_types=['1', '2', '3', '4'])
+        processes.append(input_network_softrf)
+        
         # instantiate OGN (input) module
-        input_network_ogn = InputNetworkOgnServer(data_hub)
-        processes.append(input_network_ogn)
+    #    input_network_ogn = InputNetworkOgnServer(data_hub)
+   #     processes.append(input_network_ogn)
 
         # instantiate GNSS (input) module
         # input_serial_gnss = InputSerialGnss(data_hub, '/dev/cu.usbmodem1411', 9600)    # serial device on Mac OS X
-        input_serial_gnss = InputSerialGnss(data_hub, '/dev/ttyACM0', 9600)    # serial device on Linux
-        processes.append(input_serial_gnss)
+#       input_serial_gnss = InputSerialGnss(data_hub, '/dev/ttyACM0', 9600)    # serial device on Linux
+#      processes.append(input_serial_gnss)
 
         # start all modules in separate processes
 
@@ -162,9 +168,9 @@ def flightbox_main():
         # start input modules last when all processing modules are ready
         # test_data_generator.start()
         input_network_sbs1.start()
-        input_network_ogn.start()
-        input_serial_gnss.start()
-
+        input_network_softrf.start()
+        # input_network_ogn.start()
+#   input_serial_gnss.start()
         time.sleep(1)
 
         # wait for data_hub_worker to finish
